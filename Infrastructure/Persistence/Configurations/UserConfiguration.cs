@@ -2,91 +2,97 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Persistence.Configurations;
-
-public class UserConfiguration : IEntityTypeConfiguration<User>
+namespace Infrastructure.Persistence.Configurations
 {
-    public void Configure(EntityTypeBuilder<User> builder)
+    public class UserConfiguration : IEntityTypeConfiguration<User>
     {
-        // Mapeia para tabela "Users"
-        builder.ToTable("Users");
-
-        // Chave primária
-        builder.HasKey(u => u.Id);
-
-        // Propriedades básicas
-        builder.Property(u => u.Name)
-               .IsRequired()
-               .HasMaxLength(100);
-
-        builder.Property(u => u.DateOfBirth)
-               .IsRequired();
-
-        builder.Property(u => u.Phone)
-               .IsRequired()
-               .HasMaxLength(20);
-
-        // Value Object: Email
-        builder.OwnsOne(u => u.Email, email =>
+        public void Configure(EntityTypeBuilder<User> builder)
         {
-            email.Property(e => e.Value)
-                 .HasColumnName("Email")
-                 .IsRequired()
-                 .HasMaxLength(255);
-        });
+            builder.ToTable("Users");
 
-        // Value Object: Address
-        builder.OwnsOne(u => u.Address, address =>
-        {
-            address.Property(a => a.Street)
-                   .HasColumnName("Street")
-                   .IsRequired()
-                   .HasMaxLength(200);
+            builder.HasKey(u => u.Id);
+            builder.Property(u => u.Id)
+                   .HasColumnType("INT")
+                   .ValueGeneratedOnAdd()
+                   .UseIdentityColumn();
 
-            address.Property(a => a.City)
-                   .HasColumnName("City")
-                   .IsRequired()
-                   .HasMaxLength(100);
+            builder.Property(u => u.Name)
+                   .HasColumnType("VARCHAR(100)")
+                   .IsRequired();
 
-            address.Property(a => a.State)
-                   .HasColumnName("State")
-                   .IsRequired()
-                   .HasMaxLength(100);
+            builder.Property(u => u.DateOfBirth)
+                   .HasColumnType("DATETIME2")
+                   .IsRequired();
 
-            address.Property(a => a.ZipCode)
-                   .HasColumnName("ZipCode")
-                   .IsRequired()
-                   .HasMaxLength(20);
+            builder.Property(u => u.Phone)
+                   .HasColumnType("VARCHAR(20)")
+                   .IsRequired();
 
-            address.Property(a => a.Country)
-                   .HasColumnName("Country")
-                   .IsRequired()
-                   .HasMaxLength(100);
-        });
+            builder.OwnsOne(u => u.Email, email =>
+            {
+                email.Property(e => e.Value)
+                     .HasColumnName("Email")
+                     .HasColumnType("VARCHAR(255)")
+                     .IsRequired();
+            });
 
-        // Value Object: Password (hash)
-        builder.OwnsOne(u => u.Password, pw =>
-        {
-            pw.Property(p => p.Hash)
-              .HasColumnName("PasswordHash")
-              .IsRequired();
-        });
+            builder.OwnsOne(u => u.Address, address =>
+            {
+                address.Property(a => a.Street)
+                       .HasColumnName("Street")
+                       .HasColumnType("VARCHAR(200)")
+                       .IsRequired();
 
-        // Enum: armazena como string para legibilidade
-        builder.Property(u => u.Role)
-               .HasConversion<string>()
-               .HasColumnName("Role")
-               .IsRequired();
+                address.Property(a => a.City)
+                       .HasColumnName("City")
+                       .HasColumnType("VARCHAR(100)")
+                       .IsRequired();
 
-        // Campos de auditoria
-        builder.Property(u => u.CreatedAt)
-               .HasDefaultValueSql("GETUTCDATE()")
-               .ValueGeneratedOnAdd();
+                address.Property(a => a.State)
+                       .HasColumnName("State")
+                       .HasColumnType("VARCHAR(100)")
+                       .IsRequired();
 
-        builder.Property(u => u.UpdatedAt)
-               .ValueGeneratedOnUpdate();
+                address.Property(a => a.ZipCode)
+                       .HasColumnName("ZipCode")
+                       .HasColumnType("VARCHAR(20)")
+                       .IsRequired();
 
-        builder.Property(u => u.IsDeleted)
-               .HasDefaultValue(false);
+                address.Property(a => a.Country)
+                       .HasColumnName("Country")
+                       .HasColumnType("VARCHAR(100)")
+                       .IsRequired();
+            });
+
+            builder.OwnsOne(u => u.Password, pw =>
+            {
+                pw.Property(p => p.Hash)
+                  .HasColumnName("PasswordHash")
+                  .HasColumnType("VARCHAR(100)")
+                  .IsRequired();
+            });
+
+            builder.Property(u => u.Role)
+                   .HasConversion<string>()
+                   .HasColumnName("Role")
+                   .HasColumnType("VARCHAR(20)")
+                   .IsRequired();
+
+            builder.Property(u => u.CreatedAt)
+                   .HasColumnType("DATETIME2")
+                   .HasDefaultValueSql("GETUTCDATE()")
+                   .ValueGeneratedOnAdd();
+
+            builder.Property(u => u.UpdatedAt)
+                   .HasColumnType("DATETIME2")
+                   .ValueGeneratedOnUpdate();
+
+            builder.Property(u => u.DeletedAt)
+                   .HasColumnType("DATETIME2");
+
+            builder.Property(u => u.IsDeleted)
+                   .HasColumnType("BIT")
+                   .HasDefaultValue(false);
+        }
     }
 }
