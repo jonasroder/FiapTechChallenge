@@ -1,4 +1,5 @@
-﻿using Core.ValueObjects;
+﻿using Core.Enums;
+using Core.ValueObjects;
 
 namespace Core.Entity
 {
@@ -10,5 +11,6 @@ namespace Core.Entity
         public required string Phone { get; set; }
         public required Address Address { get; set; }
         public required Password Password { get; set; }
+        public required UserRole Role { get; set; }
     }
 }
