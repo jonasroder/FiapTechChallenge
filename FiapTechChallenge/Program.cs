@@ -1,6 +1,5 @@
-using Core.Repository;
-using Infrastructure.Repository;
-using Microsoft.EntityFrameworkCore;
+using Application.Extensions;
+using Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,16 +11,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); ;
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")),
-    //        .UseLazyLoadingProxies(),
-    ServiceLifetime.Scoped
-);
+builder.Services
+       .AddInfrastructure(builder.Configuration)
+       .AddApplicationServices();
 
-
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IGameRepository, GameRepository>();
-builder.Services.AddScoped<IOwnershipRepository, OwnershipRepository>();
 
 var app = builder.Build();
 
