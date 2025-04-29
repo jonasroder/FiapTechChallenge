@@ -12,11 +12,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); ;
 
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")),
-//    //        .UseLazyLoadingProxies(),
-//    ServiceLifetime.Scoped
-//);
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")),
+    //        .UseLazyLoadingProxies(),
+    ServiceLifetime.Scoped
+);
 
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
