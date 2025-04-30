@@ -33,14 +33,12 @@ namespace Core.SharedKernel.Exceptions
             ErrorCode = errorCode;
         }
 
-        // Construtor necessário para desserialização de exceções remotas/loggers
         protected DomainException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
             ErrorCode = info.GetString(nameof(ErrorCode));
         }
 
-        // Garante que ErrorCode seja serializado também
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             if (info is null) throw new ArgumentNullException(nameof(info));

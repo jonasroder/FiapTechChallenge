@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
-using Core.Authentication.Repositories;
+﻿using Core.Authentication.Repositories;
 using Core.Gaming.Repositories;
 using Infrastructure.Authentication.repositories;
 using Infrastructure.Gaming.repositories;
 using Infrastructure.SharedKernel.Logger;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.SharedKernel.Extensions;
 public static class InfrastructureServiceCollectionExtensions

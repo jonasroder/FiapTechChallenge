@@ -3,21 +3,27 @@ using Application.Authentication.Interfaces;
 using Core.Authentication.Entities;
 using Core.Authentication.Repositories;
 using Core.Authentication.ValueObjects;
+using Infrastructure.SharedKernel.Logger;
 
 namespace Application.Authentication.Services
 {
     public class UserAppService : IUserAppService
     {
         private readonly IUserRepository _userRepo;
+        private readonly BaseLogger<UserAppService> _logger;
 
-        public UserAppService(IUserRepository userRepo) =>
+        public UserAppService(BaseLogger<UserAppService> logger, IUserRepository userRepo)
+        {
+            _logger = logger;
             _userRepo = userRepo;
+        }
 
         public async Task<int> RegisterAsync(UserInput dto)
         {
+            _logger.LogInformation($"Iniciando registro de novo usuário. Email: {dto.Email}");
+
             var emailVo = new Email(dto.Email);
             var passwordVo = Password.Create(dto.Password);
-
             var addressVo = new Address
             {
                 Street = dto.Address.Street,
@@ -39,17 +45,23 @@ namespace Application.Authentication.Services
             };
 
             _userRepo.Add(user);
-
+            _logger.LogInformation($"Usuário registrado com sucesso. UserId: {user.Id}");
 
             return user.Id;
         }
 
-
         public async Task<UserResponseDto> GetById(int id)
         {
-            var user =  _userRepo.GetById(id);
+            _logger.LogInformation($"Buscando usuário por Id: {id}");
 
-            return new UserResponseDto
+            var user = _userRepo.GetById(id);
+            if (user == null)
+            {
+                _logger.LogWarning($"Usuário não encontrado. Id: {id}");
+                return null;
+            }
+
+            var result = new UserResponseDto
             {
                 Id = user.Id,
                 Name = user.Name,
@@ -67,6 +79,8 @@ namespace Application.Authentication.Services
                 }
             };
 
+            _logger.LogInformation($"Usuário encontrado e mapeado para DTO. Id: {id}");
+            return result;           
         }
     }
 }

@@ -1,5 +1,6 @@
 using Application.SharedKernel.Extensions;
 using Infrastructure.SharedKernel.Extensions;
+using Infrastructure.SharedKernel.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseMiddleware<CorrelationMiddleware>();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
