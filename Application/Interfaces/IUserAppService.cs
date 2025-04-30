@@ -3,5 +3,7 @@
 namespace Application.Interfaces;
 public interface IUserAppService
 {
-    Task<Guid> RegisterAsync(UserDto dto);
+    Task<int> RegisterAsync(UserInput dto);
+
+    Task<UserResponseDto> GetById(int id);
 }

@@ -8,10 +8,10 @@ namespace Core.ValueObjects
 {
     public sealed class Address
     {
-        public string Street { get; }
-        public string City { get; }
-        public string State { get; }
-        public string ZipCode { get; }
-        public string Country { get; }
+        public string Street { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string ZipCode { get; set; }
+        public string Country { get; set; }
     }
 }
