@@ -1,5 +1,5 @@
-using Application.Extensions;
-using Infrastructure.Extensions;
+using Application.SharedKernel.Extensions;
+using Infrastructure.SharedKernel.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 

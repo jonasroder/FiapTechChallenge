@@ -1,5 +1,5 @@
-﻿using Application.DTOs;
-using Application.Interfaces;
+﻿using Application.Authentication.DTOs;
+using Application.Authentication.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FiapTechChallenge.Controllers
