@@ -5,6 +5,7 @@ using Core.Authentication.Repositories;
 using Core.Gaming.Repositories;
 using Infrastructure.Authentication.repositories;
 using Infrastructure.Gaming.repositories;
+using Infrastructure.SharedKernel.Logger;
 
 namespace Infrastructure.SharedKernel.Extensions;
 public static class InfrastructureServiceCollectionExtensions
@@ -15,10 +16,13 @@ public static class InfrastructureServiceCollectionExtensions
             opt.UseSqlServer(config.GetConnectionString("DefaultConnection")),
             ServiceLifetime.Scoped);
 
+        services.AddScoped<ICorrelationIdGenerator, CorrelationIdGenerator>();
+        services.AddScoped(typeof(BaseLogger<>));
+
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IGameRepository, GameRepository>();
         services.AddScoped<IOwnershipRepository, OwnershipRepository>();
-
+       
 
         return services;
     }
