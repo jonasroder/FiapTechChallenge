@@ -9,5 +9,8 @@ namespace Infrastructure.Authentication.repositories
         public UserRepository(ApplicationDbContext context) : base(context)
         {
         }
+
+        public async Task<User?> GetByUsernameAsync(string username)
+          => _dbSet.FirstOrDefault(e => e.Email.Value == username);
     }
 }

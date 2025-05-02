@@ -3,6 +3,7 @@ using Core.Gaming.Repositories;
 using Infrastructure.Authentication.repositories;
 using Infrastructure.Gaming.repositories;
 using Infrastructure.SharedKernel.Logger;
+using Infrastructure.SharedKernel.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +20,7 @@ public static class InfrastructureServiceCollectionExtensions
         services.AddScoped<ICorrelationIdGenerator, CorrelationIdGenerator>();
         services.AddScoped(typeof(BaseLogger<>));
 
+        services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IGameRepository, GameRepository>();
         services.AddScoped<IOwnershipRepository, OwnershipRepository>();
