@@ -23,7 +23,8 @@ namespace Infrastructure.SharedKernel.Security
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.UniqueName, user.Email.Value)
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.Email.Value),
+                new Claim(ClaimTypes.Role,                    user.Role.ToString())
             };
 
             var token = new JwtSecurityToken(
