@@ -1,5 +1,6 @@
 ﻿using Application.Authentication.DTOs;
-using Application.Authentication.Interfaces;
+using Application.Authentication.Contracts;
+using Application.SharedKernel.Common;
 using Core.Authentication.Entities;
 using Core.Authentication.Repositories;
 using Core.Authentication.ValueObjects;
@@ -18,9 +19,14 @@ namespace Application.Authentication.Services
             _userRepo = userRepo;
         }
 
-        public async Task<int> RegisterAsync(UserInput dto)
+        public async Task<Result<UserResponseDto>> RegisterAsync(UserInput dto)
         {
+            ResultLoggerContext.Set(_logger);
+
             _logger.LogInformation($"Iniciando registro de novo usuário. Email: {dto.Email}");
+
+            if (await _userRepo.Exists(dto.Email))
+                return Result<UserResponseDto>.Conflict<UserAppService>("E-mail já cadastrado.", "EMAIL_ALREADY_REGISTERED");
 
             var emailVo = new Email(dto.Email);
             var passwordVo = Password.Create(dto.Password);
@@ -45,21 +51,40 @@ namespace Application.Authentication.Services
             };
 
             _userRepo.Add(user);
+
             _logger.LogInformation($"Usuário registrado com sucesso. UserId: {user.Id}");
 
-            return user.Id;
+            var result = new UserResponseDto
+            {
+                Id = user.Id,
+                Name = user.Name,
+                DateOfBirth = user.DateOfBirth,
+                Email = user.Email.Value,
+                Phone = user.Phone,
+                Role = user.Role,
+                Address = new AddressResponseDto
+                {
+                    Street = user.Address.Street,
+                    City = user.Address.City,
+                    State = user.Address.State,
+                    ZipCode = user.Address.ZipCode,
+                    Country = user.Address.Country
+                }
+            };
+
+            return Result<UserResponseDto>.Success<UserAppService>(result, "Usuário criado com sucesso.");
         }
 
-        public async Task<UserResponseDto> GetById(int id)
+
+        public async Task<Result<UserResponseDto>> GetById(int id)
         {
+            ResultLoggerContext.Set(_logger);
+
             _logger.LogInformation($"Buscando usuário por Id: {id}");
 
             var user = _userRepo.GetById(id);
             if (user == null)
-            {
-                _logger.LogWarning($"Usuário não encontrado. Id: {id}");
-                return null;
-            }
+                return Result<UserResponseDto>.NotFound<UserAppService>($"Usuário não encontrado. Id: {id}", "USER_NOT_FOUND");
 
             var result = new UserResponseDto
             {
@@ -80,7 +105,8 @@ namespace Application.Authentication.Services
             };
 
             _logger.LogInformation($"Usuário encontrado e mapeado para DTO. Id: {id}");
-            return result;           
+
+            return Result<UserResponseDto>.Success<UserAppService>(result);
         }
     }
 }

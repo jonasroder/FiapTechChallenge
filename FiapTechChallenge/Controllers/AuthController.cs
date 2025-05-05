@@ -1,6 +1,8 @@
-﻿using Application.Authentication.Interfaces;
+﻿using Application.Authentication.Contracts;
 using Application.DTOs.Auth;
 using Microsoft.AspNetCore.Mvc;
+using Application.SharedKernel.Extensions;
+
 
 namespace FiapTechChallenge.Controllers
 {
@@ -19,8 +21,8 @@ namespace FiapTechChallenge.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest dto)
         {
-            var token = await _authService.LoginAsync(dto);
-             return Ok(token);
+            var result = await _authService.LoginAsync(dto);
+            return result.ToActionResult();
         }
     }
 }

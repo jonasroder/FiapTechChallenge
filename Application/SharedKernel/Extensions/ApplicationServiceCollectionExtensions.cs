@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Application.Authentication.Services;
-using Application.Authentication.Interfaces;
+using Application.Authentication.Contracts;
 
 namespace Application.SharedKernel.Extensions;
 public static class ApplicationServiceCollectionExtensions

@@ -1,5 +1,6 @@
-﻿using Application.Authentication.DTOs;
-using Application.Authentication.Interfaces;
+﻿using Application.Authentication.Contracts;
+using Application.Authentication.DTOs;
+using Application.SharedKernel.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,35 +13,24 @@ namespace FiapTechChallenge.Controllers
     {
         private readonly IUserAppService _userService;
 
-        public UsersController(IUserAppService userService) =>
-            _userService = userService;
-
-
-
-        [HttpPost]
-        public async Task<ActionResult<UserResponseDto>> Post([FromBody] UserInput dto)
+        public UsersController(IUserAppService userService)
         {
-            var id = await _userService.RegisterAsync(dto);
-
-            var created = await _userService.GetById(id);
-
-            return CreatedAtAction(
-                nameof(Get),
-                new { id = created.Id },
-                created
-            );
+            _userService = userService;
         }
 
-
+        [HttpPost]
+        [AllowAnonymous] // ou remova se quiser proteger o registro
+        public async Task<IActionResult> Post([FromBody] UserInput dto)
+        {
+            var result = await _userService.RegisterAsync(dto);
+            return result.ToActionResult();
+        }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<UserResponseDto>> Get([FromRoute] int id)
+        public async Task<IActionResult> Get([FromRoute] int id)
         {
-            var user = await _userService.GetById(id);
-            if (user is null)
-                return NotFound();
-
-            return Ok(user);
+            var result = await _userService.GetById(id);
+            return result.ToActionResult();
         }
     }
 }
