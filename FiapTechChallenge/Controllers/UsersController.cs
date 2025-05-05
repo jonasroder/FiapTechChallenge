@@ -18,13 +18,14 @@ namespace FiapTechChallenge.Controllers
             _userService = userService;
         }
 
+
         [HttpPost]
-        [AllowAnonymous] // ou remova se quiser proteger o registro
         public async Task<IActionResult> Post([FromBody] UserInput dto)
         {
             var result = await _userService.RegisterAsync(dto);
             return result.ToActionResult();
         }
+
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get([FromRoute] int id)

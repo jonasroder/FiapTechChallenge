@@ -1,9 +1,9 @@
 ﻿using Core.Gaming.Entities;
 using Core.SharedKernel.Repository;
 
-namespace Core.Gaming.Repositories
+namespace Core.Gaming.Repositories;
+
+public interface IGameRepository : IRepository<Game>
 {
-    public interface IGameRepository : IRepository<Game>
-    {
-    }
+    Task CadastrarEmLote(IEnumerable<Game> games);
 }

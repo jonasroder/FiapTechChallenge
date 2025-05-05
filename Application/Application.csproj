@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <Folder Include="Gaming\DTOs\" />
-    <Folder Include="Gaming\Services\" />
   </ItemGroup>
 
 </Project>
